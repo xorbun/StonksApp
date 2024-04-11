@@ -10,7 +10,7 @@ const RecentExpenses=()=>{
         const date7DaysAgo=getDateMinusDays(today,7)
         return expense.date> date7DaysAgo
     })
-    return <ExpensesOutput expenses={recentExpenses}expensesPeriod='Last 7 days'/>
+    return <ExpensesOutput expenses={recentExpenses}expensesPeriod='Last 7 days' fallBackText={'No registered expensens found in the last 7 days'}/>
 }
 export default RecentExpenses
 const styles=StyleSheet.create({
