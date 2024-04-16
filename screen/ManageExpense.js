@@ -4,6 +4,7 @@ import { useContext, useLayoutEffect } from "react";
 import IconButton from "../components/UI/IconButton";
 import Button from "../components/UI/Button";
 import { ExpensesContext } from "../store/expenses-context";
+import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 
 const ManageExpense=({route,navigation})=>{
    
@@ -25,7 +26,7 @@ const ManageExpense=({route,navigation})=>{
             expenseCtx.updateExpense(editedExpenseId,{description:'Test',amount:12.99,date:new Date('2024-04-11')})
         }
         else{
-            expenseCtx.addExpense({description:'Test',amount:12.99,date:new Date('2024-04-11')})
+            expenseCtx.addExpense({description:'Test',amount:12.99,date:new Date()})
         }
         navigation.goBack();
     }
@@ -36,6 +37,7 @@ const ManageExpense=({route,navigation})=>{
     },[navigation, isEdited])
     return(
         <View style={styles.container}>
+            <ExpenseForm/>
             <View style={styles.buttonContainer}>
                 <Button style={styles.button} mode='flat' onPress={cancelHandler}>CANCEL</Button>
                 <Button style={styles.button}  onPress={confirmHandler}>{isEdited ? 'UPDATE':'ADD'}</Button>

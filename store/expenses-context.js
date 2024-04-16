@@ -4,17 +4,17 @@ const DUMMY_EXPENSES=[
      description:'A pair of shoes',
      amount:59.99,
      date:new Date('2024-04-09')
- },
- { id:'e2',
- description:'iphone',
- amount:959.99,
- date:new Date('2024-03-12')
- },
- { id:'e3',
- description:'foods',
- amount:70.99,
- date:new Date('2024-04-10')
- },
+    },
+    { id:'e2',
+      description:'iphone',
+      amount:959.99,
+      date:new Date('2024-03-12')
+    },
+    { id:'e3',
+      description:'foods',
+      amount:70.99,
+      date:new Date('2024-04-10')
+    },
  ]
 export const ExpensesContext=createContext({
     expenses:[],
@@ -25,7 +25,7 @@ export const ExpensesContext=createContext({
 const expensesReducer=(state,action)=>{
     switch(action.type){
         case 'ADD':
-            const id= Math.random().toString()
+            const id=new Date().toString()+ Math.random().toString()
             return [{...action.payload,id: id},...state]
         case 'UPDATE':
             const updatableExpenseIndex=state.findIndex((expense)=>{
