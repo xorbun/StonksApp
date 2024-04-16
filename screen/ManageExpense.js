@@ -21,12 +21,12 @@ const ManageExpense=({route,navigation})=>{
     const cancelHandler=()=>{
         navigation.goBack();
     }
-    const confirmHandler=()=>{
+    const confirmHandler=(expenseData)=>{
         if(isEdited){
-            expenseCtx.updateExpense(editedExpenseId,{description:'Test',amount:12.99,date:new Date('2024-04-11')})
+            expenseCtx.updateExpense(editedExpenseId,expenseData)
         }
         else{
-            expenseCtx.addExpense({description:'Test',amount:12.99,date:new Date()})
+            expenseCtx.addExpense(expenseData)
         }
         navigation.goBack();
     }
@@ -37,11 +37,8 @@ const ManageExpense=({route,navigation})=>{
     },[navigation, isEdited])
     return(
         <View style={styles.container}>
-            <ExpenseForm/>
-            <View style={styles.buttonContainer}>
-                <Button style={styles.button} mode='flat' onPress={cancelHandler}>CANCEL</Button>
-                <Button style={styles.button}  onPress={confirmHandler}>{isEdited ? 'UPDATE':'ADD'}</Button>
-            </View>
+            <ExpenseForm submitButtonLabel={isEdited ? 'UPDATE':'ADD'} onCancel={cancelHandler}onSubmit={confirmHandler}/>
+            
             <View style={styles.deleteButton}>
                 {isEdited && <IconButton icon='trash' color={GlobalStyles.colors.error500} onPress={deleteHandler}/>}
             </View>
@@ -58,14 +55,7 @@ const styles=StyleSheet.create({
         padding:24,
         backgroundColor:GlobalStyles.colors.primary800
     },
-    buttonContainer:{
-        flexDirection:'row',
-        justifyContent:'center'
-    },
-    button:{
-        minWidth:120,
-        marginHorizontal:8
-    },
+  
    deleteButton:{
     alignItems:'center',
     paddingTop:8,
