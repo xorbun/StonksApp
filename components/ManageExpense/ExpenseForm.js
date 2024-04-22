@@ -1,30 +1,49 @@
 import { useState } from "react"
 import InputComp from "./Input"
-import { View,StyleSheet,Text } from "react-native"
+import { View,StyleSheet,Text, Alert } from "react-native"
 import Button from "../UI/Button"
-
-const ExpenseForm=({submitButtonLabel,onCancel,onSubmit})=>{
-    const [inputValue,setInputValue]=useState({
-        amount:'',
-        date:'',
-        description:''
-    })
+import { getFormattedDate } from "../../util/date"
+const ExpenseForm=({submitButtonLabel,onCancel,onSubmit,defaultValue})=>{
+    const [inputs, setInputs] = useState({
+      amount:{value: defaultValue ? defaultValue.amount.toString() : "",isValid:!!defaultValue},
+       
+      date:{value: defaultValue ? getFormattedDate(defaultValue.date) : "",isValid:!!defaultValue},
+        
+      description:{value:  defaultValue ? defaultValue.description : "",isValid:!!defaultValue}
+       
+   ,
+    });
     const inputChangeHandler=(inputIdentifier,enteredValue)=>{
-        setInputValue((currentInputValues)=>{
+        setInputs((currentInput)=>{
             return {
-                ...currentInputValues,
-                [inputIdentifier]:enteredValue
+                ...currentInput,
+                [inputIdentifier]:{value:enteredValue,isValid:true}
             }
         })
     }
     const submitHandler=()=>{
         const expenseData={
-            amount:+inputValue.amount,
-            date:new Date(inputValue.date),
-            description:inputValue.description
+            amount:+inputs.amount.value,
+            date:new Date(inputs.date.value),
+            description:inputs.description.value
         };
+        const amountIsValid= !isNaN(expenseData.amount) && expenseData.amount > 0
+        const dateIsValid= expenseData.date.toString() !=='Invalid Date'
+        const descriptionIsValid= expenseData.description.trim().length>0
+        if(!amountIsValid || !dateIsValid || !descriptionIsValid){
+            //Alert.alert('Invalid input','check your input values')
+           setInputs((currentInputs)=>{
+            return{
+                amount:{value:currentInputs.amount.value, isValid:amountIsValid},
+                date:{value:currentInputs.date.value,isValid:dateIsValid},
+                description:{value:currentInputs.description,isValid:descriptionIsValid}
+            }
+           })
+            return; 
+        }
         onSubmit(expenseData)
     }
+    const formIsInvalid= !inputs.amount.isValid || !inputs.date.isValid || !inputs.description.isValid
     return(
         <View style={styles.form}>
             <Text style={styles.title}>Your Expense</Text>
@@ -32,13 +51,13 @@ const ExpenseForm=({submitButtonLabel,onCancel,onSubmit})=>{
                 <InputComp style={styles.rowInputStyle} label='Amount' textInputConfig={{
                     keyboardType:'decimal-pad',
                     onChangeText:inputChangeHandler.bind(this, 'amount'),
-                    value:inputValue.amount
+                    value:inputs.amount.value
                 }}/>
                 <InputComp style={styles.rowInputStyle} label='Date' textInputConfig={{
                     placeholder:'YYYY-MM-DD',
                     maxLength:10,
                     onChangeText:inputChangeHandler.bind(this, 'date'),
-                    value:inputValue.date
+                    value:inputs.date.value
                 }}/>
            </View>
            <InputComp label='Description' textInputConfig={{
@@ -46,8 +65,9 @@ const ExpenseForm=({submitButtonLabel,onCancel,onSubmit})=>{
             //autoCorrect:false, imposta tutte le parole con la lettera maiuscola. di default è settata su true
             //autoCapitalize:'characters' è possibile dichiarare quale tipologia di parola si vuole settare la lettera maiuscola
             onChangeText:inputChangeHandler.bind(this, 'description'),
-                    value:inputValue.description
+                    value:inputs.description.value
            }}/>
+           {formIsInvalid && <Text style={styles.errorMessage}>Invalid inputs value - Please check your entered data</Text>}
            <View style={styles.buttonContainer}>
                 <Button style={styles.button} mode='flat' onPress={onCancel}>CANCEL</Button>
                 <Button style={styles.button}  onPress={submitHandler}>{submitButtonLabel}</Button>
@@ -66,6 +86,13 @@ const styles=StyleSheet.create({
         color:'white',
         textAlign:'center',
         marginVertical:24
+    },
+    errorMessage:{
+        color:'white',
+        textAlign:'center',
+        fontSize:18,
+        backgroundColor:'red',
+       
     },
     amountDateContainer:{
         flexDirection:'row',
