@@ -3,6 +3,7 @@ import InputComp from "./Input"
 import { View,StyleSheet,Text, Alert } from "react-native"
 import Button from "../UI/Button"
 import { getFormattedDate } from "../../util/date"
+import { GlobalStyles } from "../../costants/styles"
 const ExpenseForm=({submitButtonLabel,onCancel,onSubmit,defaultValue})=>{
     const [inputs, setInputs] = useState({
       amount:{value: defaultValue ? defaultValue.amount.toString() : "",isValid:!!defaultValue},
@@ -48,19 +49,19 @@ const ExpenseForm=({submitButtonLabel,onCancel,onSubmit,defaultValue})=>{
         <View style={styles.form}>
             <Text style={styles.title}>Your Expense</Text>
             <View style={styles.amountDateContainer}>
-                <InputComp style={styles.rowInputStyle} label='Amount' textInputConfig={{
+                <InputComp style={styles.rowInputStyle} label='Amount' isInvalid={!inputs.amount.isValid} textInputConfig={{
                     keyboardType:'decimal-pad',
                     onChangeText:inputChangeHandler.bind(this, 'amount'),
                     value:inputs.amount.value
                 }}/>
-                <InputComp style={styles.rowInputStyle} label='Date' textInputConfig={{
+                <InputComp style={styles.rowInputStyle} label='Date'isInvalid={!inputs.date.isValid}  textInputConfig={{
                     placeholder:'YYYY-MM-DD',
                     maxLength:10,
                     onChangeText:inputChangeHandler.bind(this, 'date'),
                     value:inputs.date.value
                 }}/>
            </View>
-           <InputComp label='Description' textInputConfig={{
+           <InputComp label='Description'isInvalid={!inputs.description.isValid}  textInputConfig={{
             multiline:true,
             //autoCorrect:false, imposta tutte le parole con la lettera maiuscola. di default è settata su true
             //autoCapitalize:'characters' è possibile dichiarare quale tipologia di parola si vuole settare la lettera maiuscola
@@ -88,10 +89,10 @@ const styles=StyleSheet.create({
         marginVertical:24
     },
     errorMessage:{
-        color:'white',
+        color:GlobalStyles.colors.error500,
         textAlign:'center',
         fontSize:18,
-        backgroundColor:'red',
+        
        
     },
     amountDateContainer:{
