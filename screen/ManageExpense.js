@@ -4,6 +4,9 @@ import { useContext, useLayoutEffect } from "react";
 import IconButton from "../components/UI/IconButton";
 import { ExpensesContext } from "../store/expenses-context";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
+import { storeExpense } from "../util/http";
+
+
 
 const ManageExpense=({route,navigation})=>{
    
@@ -27,6 +30,7 @@ const ManageExpense=({route,navigation})=>{
             expenseCtx.updateExpense(editedExpenseId,expenseData)
         }
         else{
+            storeExpense(expenseData)
             expenseCtx.addExpense(expenseData)
         }
         navigation.goBack();
@@ -39,7 +43,6 @@ const ManageExpense=({route,navigation})=>{
     return(
         <View style={styles.container}>
             <ExpenseForm submitButtonLabel={isEdited ? 'UPDATE':'ADD'} onCancel={cancelHandler}onSubmit={confirmHandler} defaultValue={selectedExpenses}/>
-            
             <View style={styles.deleteButton}>
                 {isEdited && <IconButton icon='trash' color={GlobalStyles.colors.error500} onPress={deleteHandler}/>}
             </View>

@@ -1,19 +1,15 @@
 import { useState } from "react"
 import InputComp from "./Input"
-import { View,StyleSheet,Text, Alert } from "react-native"
+import { View,StyleSheet,Text } from "react-native"
 import Button from "../UI/Button"
 import { getFormattedDate } from "../../util/date"
 import { GlobalStyles } from "../../costants/styles"
 const ExpenseForm=({submitButtonLabel,onCancel,onSubmit,defaultValue})=>{
     const [inputs, setInputs] = useState({
-      amount:{value: defaultValue ? defaultValue.amount.toString() : "",isValid:!!defaultValue},
-       
-      date:{value: defaultValue ? getFormattedDate(defaultValue.date) : "",isValid:!!defaultValue},
-        
-      description:{value:  defaultValue ? defaultValue.description : "",isValid:!!defaultValue}
-       
-   ,
-    });
+      amount:{value: defaultValue ? defaultValue.amount.toString() : "",isValid:true},
+      date:{value: defaultValue ? getFormattedDate(defaultValue.date) : "",isValid:true},
+      description:{value:  defaultValue ? defaultValue.description : "",isValid:true}
+     });
     const inputChangeHandler=(inputIdentifier,enteredValue)=>{
         setInputs((currentInput)=>{
             return {
@@ -66,7 +62,7 @@ const ExpenseForm=({submitButtonLabel,onCancel,onSubmit,defaultValue})=>{
             //autoCorrect:false, imposta tutte le parole con la lettera maiuscola. di default è settata su true
             //autoCapitalize:'characters' è possibile dichiarare quale tipologia di parola si vuole settare la lettera maiuscola
             onChangeText:inputChangeHandler.bind(this, 'description'),
-                    value:inputs.description.value
+            value:inputs.description.value
            }}/>
            {formIsInvalid && <Text style={styles.errorMessage}>Invalid inputs value - Please check your entered data</Text>}
            <View style={styles.buttonContainer}>
@@ -92,8 +88,6 @@ const styles=StyleSheet.create({
         color:GlobalStyles.colors.error500,
         textAlign:'center',
         fontSize:18,
-        
-       
     },
     amountDateContainer:{
         flexDirection:'row',
