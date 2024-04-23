@@ -1,15 +1,16 @@
 import { View,Text,StyleSheet } from "react-native"
 import { GlobalStyles } from "../costants/styles";
-import { useContext, useLayoutEffect } from "react";
+import { useContext, useLayoutEffect, useState } from "react";
 import IconButton from "../components/UI/IconButton";
 import { ExpensesContext } from "../store/expenses-context";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
-import { storeExpense } from "../util/http";
+import { deleteExpense, storeExpense, updateExpense } from "../util/http";
+import LoadingOverlay from "../components/UI/LoadingOverlay";
 
 
 
 const ManageExpense=({route,navigation})=>{
-   
+   const [isSubmitting,setIsSubmitting]=useState(false)
     const expenseCtx=useContext(ExpensesContext)
     const editedExpenseId=route.params?.expenseId;
     const editedExpenseDesc=route.params?.description
@@ -18,17 +19,21 @@ const ManageExpense=({route,navigation})=>{
     const isEdited=!!editedExpenseId
 
     const selectedExpenses=expenseCtx.expenses.find(expense => expense.id===editedExpenseId)
-    const deleteHandler=()=>{
-        navigation.goBack();
-        
+    const deleteHandler=async()=>{
+        setIsSubmitting(true)
+        await deleteExpense(editedExpenseId)
+        //setIsSubmitting(false)
         expenseCtx.deleteExpense(editedExpenseId)
+        navigation.goBack();
     }
     const cancelHandler=()=>{
         navigation.goBack();
     }
     const confirmHandler=async(expenseData)=>{
+        setIsSubmitting(true)
         if(isEdited){
             expenseCtx.updateExpense(editedExpenseId,expenseData)
+            updateExpense(editedExpenseId,expenseData)
         }
         else{
             const id= await storeExpense(expenseData)
@@ -42,6 +47,10 @@ const ManageExpense=({route,navigation})=>{
             title:isEdited ? 'Edit Expense': 'Add expense'
         })
     },[navigation, isEdited])
+
+    if(isSubmitting){
+        return <LoadingOverlay/>
+    }
     return(
         <View style={styles.container}>
             <ExpenseForm submitButtonLabel={isEdited ? 'UPDATE':'ADD'} onCancel={cancelHandler}onSubmit={confirmHandler} defaultValue={selectedExpenses}/>
