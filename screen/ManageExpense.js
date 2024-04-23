@@ -20,18 +20,20 @@ const ManageExpense=({route,navigation})=>{
     const selectedExpenses=expenseCtx.expenses.find(expense => expense.id===editedExpenseId)
     const deleteHandler=()=>{
         navigation.goBack();
+        
         expenseCtx.deleteExpense(editedExpenseId)
     }
     const cancelHandler=()=>{
         navigation.goBack();
     }
-    const confirmHandler=(expenseData)=>{
+    const confirmHandler=async(expenseData)=>{
         if(isEdited){
             expenseCtx.updateExpense(editedExpenseId,expenseData)
         }
         else{
-            storeExpense(expenseData)
-            expenseCtx.addExpense(expenseData)
+            const id= await storeExpense(expenseData)
+            
+            expenseCtx.addExpense({...expenseData,id:id})
         }
         navigation.goBack();
     }

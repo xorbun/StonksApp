@@ -1,4 +1,4 @@
-import { View,StyleSheet } from "react-native"
+
 import ExpensesOutput from "../components/ExpensesOutput"
 import { useContext } from "react"
 import { ExpensesContext } from "../store/expenses-context"
@@ -8,6 +8,4 @@ const AllExpenses=()=>{
 }
 export default AllExpenses
 
-const styles=StyleSheet.create({
 
-})

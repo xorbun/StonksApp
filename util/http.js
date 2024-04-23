@@ -1,10 +1,11 @@
 import axios from "axios"
 
 const BACKEND_URL='https://react-native-51ad8-default-rtdb.europe-west1.firebasedatabase.app'
-export function storeExpense(expenseData){
+export async function storeExpense(expenseData){
     
-        axios.post(BACKEND_URL+'/expenses.json',expenseData)
-    
+     const response=await axios.post(BACKEND_URL+'/expenses.json',expenseData)
+     const id= response.data.name
+     return id
 }
 export async function fetchExpense(){
    const response= await axios.get(BACKEND_URL+'/expenses.json')
@@ -20,5 +21,8 @@ export async function fetchExpense(){
     expenses.push(expenseObject)
    }
    return expenses
+}
+export async function deleteExpense(expenseData){
+    const response= await axios.delete(BACKEND_URL+'/expense.json',expenseData)
 }
 
